@@ -1,0 +1,20 @@
+<header class="bg-white dark:bg-slate-800 shadow-md">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center space-x-3 cursor-pointer" (click)="onNavigate('dashboard')">
+        <i class="fa-solid fa-people-roof text-3xl text-indigo-600 dark:text-indigo-400"></i>
+        <span class="text-2xl font-bold text-slate-800 dark:text-white">ReferMate</span>
+      </div>
+      <nav class="hidden md:flex items-center space-x-6">
+        <a (click)="onNavigate('referrals')" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium cursor-pointer">Referrals</a>
+        <a (click)="onNavigate('resume')" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium cursor-pointer">Resume Builder</a>
+        <a (click)="onNavigate('trends')" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium cursor-pointer">Job Trends</a>
+        <button (click)="onNavigate('chatbot')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
+          <i class="fa-solid fa-robot"></i>
+          <span>AI Assistant</span>
+        </button>
+      </nav>
+      <!-- Mobile menu button can be added here -->
+    </div>
+  </div>
+</header>
