@@ -1,28 +1,32 @@
-<div class="min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
-  <app-header (navigate)="onNavigate($event)"></app-header>
-  <main class="p-4 sm:p-6 lg:p-8">
-    @switch (activeView()) {
-      @case ('dashboard') {
-        <app-dashboard (navigate)="onNavigate($event)"></app-dashboard>
+@if (isAuthenticated()) {
+  <div class="min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+    <app-header (navigate)="onNavigate($event)" (logout)="logout()"></app-header>
+    <main class="p-4 sm:p-6 lg:p-8">
+      @switch (activeView()) {
+        @case ('dashboard') {
+          <app-dashboard (navigate)="onNavigate($event)"></app-dashboard>
+        }
+        @case ('chatbot') {
+          <app-chatbot></app-chatbot>
+        }
+        @case ('referrals') {
+          <app-referrals></app-referrals>
+        }
+        @case ('resume') {
+          <app-resume-builder></app-resume-builder>
+        }
+        @case ('trends') {
+          <app-placeholder featureName="Job Trends" icon="fa-solid fa-chart-line"></app-placeholder>
+        }
+        @case ('notes') {
+          <app-placeholder featureName="My Notes" icon="fa-solid fa-clipboard"></app-placeholder>
+        }
+        @case ('reviews') {
+          <app-placeholder featureName="Company Reviews" icon="fa-solid fa-star"></app-placeholder>
+        }
       }
-      @case ('chatbot') {
-        <app-chatbot></app-chatbot>
-      }
-      @case ('referrals') {
-        <app-referrals></app-referrals>
-      }
-      @case ('resume') {
-        <app-resume-builder></app-resume-builder>
-      }
-      @case ('trends') {
-        <app-placeholder featureName="Job Trends" icon="fa-solid fa-chart-line"></app-placeholder>
-      }
-      @case ('notes') {
-        <app-placeholder featureName="My Notes" icon="fa-solid fa-clipboard"></app-placeholder>
-      }
-      @case ('reviews') {
-        <app-placeholder featureName="Company Reviews" icon="fa-solid fa-star"></app-placeholder>
-      }
-    }
-  </main>
-</div>
+    </main>
+  </div>
+} @else {
+  <app-landing (login)="login()"></app-landing>
+}

@@ -10,6 +10,7 @@ import { AppView } from '../../models';
 })
 export class HeaderComponent {
   @Output() navigate = new EventEmitter<AppView>();
+  @Output() logout = new EventEmitter<void>();
 
   onNavigate(view: AppView) {
     this.navigate.emit(view);
