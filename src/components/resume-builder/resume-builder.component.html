@@ -1,0 +1,368 @@
+<div class="max-w-7xl mx-auto animate-fade-in">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-2">AI-Powered Resume Builder</h1>
+    <p class="text-lg text-slate-600 dark:text-slate-300">Create a professional resume that stands out.</p>
+  </div>
+
+  <!-- Step Indicator -->
+  <div class="w-full max-w-2xl mx-auto mb-8">
+    <div class="flex items-center justify-between">
+      @for (stepInfo of [{num: 1, name: 'Template'}, {num: 2, name: 'Content'}, {num: 3, name: 'Finalize'}]; track stepInfo.num) {
+        <div class="flex items-center" [class.flex-1]="stepInfo.num < 3">
+          <div class="flex flex-col items-center cursor-pointer" (click)="setStep(stepInfo.num)">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300" 
+                 [class.bg-indigo-600]="step() >= stepInfo.num" 
+                 [class.text-white]="step() >= stepInfo.num" 
+                 [class.bg-slate-200]="step() < stepInfo.num"
+                 [class.dark:bg-slate-700]="step() < stepInfo.num">
+              {{ stepInfo.num }}
+            </div>
+            <p class="text-sm mt-2" [class.font-bold]="step() === stepInfo.num">{{ stepInfo.name }}</p>
+          </div>
+          @if (stepInfo.num < 3) {
+            <div class="flex-auto border-t-2 transition-colors duration-500"
+                 [class.border-indigo-600]="step() > stepInfo.num"
+                 [class.border-slate-200]="step() <= stepInfo.num"
+                 [class.dark:border-slate-700]="step() <= stepInfo.num"></div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Step Content -->
+  <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-lg shadow-xl">
+    <!-- Step 1: Template Selection -->
+    @if (step() === 1) {
+      <div class="animate-fade-in">
+        <h2 class="text-2xl font-bold text-center mb-6">Choose Your Template</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          @for (template of templates; track template.id) {
+            <div (click)="selectTemplate(template.id)" 
+                 class="border-2 rounded-lg p-2 cursor-pointer hover:border-indigo-500 hover:shadow-lg transition-all"
+                 [class.border-indigo-600]="resume().template === template.id"
+                 [class.border-slate-200]="resume().template !== template.id"
+                 [class.dark:border-slate-700]="resume().template !== template.id">
+              <img [src]="template.thumbnailUrl" [alt]="template.name" class="w-full h-auto object-cover rounded-md mb-2 shadow-sm">
+              <h3 class="text-center font-semibold">{{ template.name }}</h3>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Step 2: Content Entry -->
+    @if (step() === 2) {
+      <div class="animate-fade-in grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Form Section -->
+        <div class="h-[70vh] overflow-y-auto pr-4">
+          <h2 class="text-2xl font-bold mb-6">Fill in Your Details</h2>
+          
+          <!-- Personal Details -->
+          <div class="mb-6 p-4 border rounded-md">
+            <h3 class="font-bold text-lg mb-4">Personal Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input [(ngModel)]="resume().personal.fullName" placeholder="Full Name" class="form-input">
+              <input [(ngModel)]="resume().personal.email" placeholder="Email" type="email" class="form-input">
+              <input [(ngModel)]="resume().personal.phone" placeholder="Phone" type="tel" class="form-input">
+              <input [(ngModel)]="resume().personal.location" placeholder="City, State" class="form-input">
+              <input [(ngModel)]="resume().personal.website" placeholder="Website/LinkedIn (Optional)" class="form-input md:col-span-2">
+            </div>
+          </div>
+          
+          <!-- Summary -->
+          <div class="mb-6 p-4 border rounded-md">
+            <h3 class="font-bold text-lg mb-2">Professional Summary</h3>
+            <textarea [(ngModel)]="resume().summary" placeholder="Write a brief summary of your career highlights..." class="form-input" rows="4"></textarea>
+          </div>
+
+          <!-- Work Experience -->
+          <div class="mb-6 p-4 border rounded-md">
+            <h3 class="font-bold text-lg mb-2 flex items-center justify-between">
+              <span>Work Experience</span>
+              <button (click)="openAiModal('experience')" class="ai-button">
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Get AI Suggestions
+              </button>
+            </h3>
+            @for (exp of resume().experience; track $index; let i = $index) {
+              <div class="border-t my-4 pt-4 relative">
+                 <button (click)="removeExperience(i)" class="absolute top-2 right-0 text-red-500 hover:text-red-700 text-2xl leading-none">&times;</button>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input [(ngModel)]="exp.jobTitle" placeholder="Job Title" class="form-input">
+                  <input [(ngModel)]="exp.company" placeholder="Company" class="form-input">
+                  <input [(ngModel)]="exp.location" placeholder="Location" class="form-input">
+                  <div class="flex gap-2">
+                    <input [(ngModel)]="exp.startDate" placeholder="Start Date" class="form-input">
+                    <input [(ngModel)]="exp.endDate" placeholder="End Date" class="form-input">
+                  </div>
+                 </div>
+                 <textarea [(ngModel)]="exp.description" placeholder="Describe your responsibilities and achievements..." class="form-input mt-4" rows="5"></textarea>
+              </div>
+            }
+            <button (click)="addExperience()" class="mt-2 text-indigo-600 font-semibold">+ Add Experience</button>
+          </div>
+          
+          <!-- Education -->
+          <div class="mb-6 p-4 border rounded-md">
+             <h3 class="font-bold text-lg mb-2">Education</h3>
+             @for (edu of resume().education; track $index; let i = $index) {
+                <div class="border-t my-4 pt-4 relative">
+                  <button (click)="removeEducation(i)" class="absolute top-2 right-0 text-red-500 hover:text-red-700 text-2xl leading-none">&times;</button>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input [(ngModel)]="edu.school" placeholder="School/University" class="form-input">
+                    <input [(ngModel)]="edu.degree" placeholder="Degree" class="form-input">
+                    <input [(ngModel)]="edu.fieldOfStudy" placeholder="Field of Study" class="form-input">
+                    <div class="flex gap-2">
+                      <input [(ngModel)]="edu.startDate" placeholder="Start Date" class="form-input">
+                      <input [(ngModel)]="edu.endDate" placeholder="End Date" class="form-input">
+                    </div>
+                  </div>
+                </div>
+             }
+             <button (click)="addEducation()" class="mt-2 text-indigo-600 font-semibold">+ Add Education</button>
+          </div>
+
+          <!-- Skills -->
+          <div class="p-4 border rounded-md">
+            <h3 class="font-bold text-lg mb-2 flex items-center justify-between">
+              <span>Skills</span>
+              <button (click)="openAiModal('skills')" class="ai-button">
+                 <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Get AI Suggestions
+              </button>
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+              @for (skill of resume().skills; track $index; let i = $index) {
+                <div class="relative">
+                  <input [(ngModel)]="resume().skills[i]" placeholder="Skill" class="form-input w-full">
+                  <button (click)="removeSkill(i)" class="absolute top-1/2 right-2 -translate-y-1/2 text-slate-400 hover:text-red-500">&times;</button>
+                </div>
+              }
+            </div>
+            <button (click)="addSkill()" class="mt-2 text-indigo-600 font-semibold">+ Add Skill</button>
+          </div>
+
+        </div>
+
+        <!-- Live Preview Section -->
+        <div class="h-[70vh] overflow-y-auto border-2 rounded-lg p-1 lg:block hidden bg-white text-black">
+            <div class="p-8 resume-preview"
+                 [class.template-classic]="resume().template === 'classic'"
+                 [class.template-modern]="resume().template === 'modern'"
+                 [class.template-creative]="resume().template === 'creative'">
+                
+                <!-- This structure is for the Modern & Creative templates -->
+                @if (resume().template === 'modern' || resume().template === 'creative') {
+                  <div class="preview-container">
+                    <aside class="preview-sidebar">
+                      <header>
+                        <h2 class="preview-name">{{ resume().personal.fullName || 'Your Name' }}</h2>
+                      </header>
+                      <section>
+                         <h3 class="preview-section-title">Contact</h3>
+                         <div class="preview-contact">
+                            @if(resume().personal.email) { <div>{{ resume().personal.email }}</div> }
+                            @if(resume().personal.phone) { <div>{{ resume().personal.phone }}</div> }
+                            @if(resume().personal.location) { <div>{{ resume().personal.location }}</div> }
+                            @if(resume().personal.website) { <div>{{ resume().personal.website }}</div> }
+                         </div>
+                      </section>
+                      <section>
+                        <h3 class="preview-section-title">Skills</h3>
+                        <div class="preview-skills-list">
+                          @for (skill of resume().skills; track $index) {
+                             @if (skill) { <span>{{ skill }}</span> }
+                          }
+                        </div>
+                      </section>
+                    </aside>
+                    <main class="preview-main">
+                      <section>
+                        <h3 class="preview-section-title">Summary</h3>
+                        <p class="preview-body">{{ resume().summary }}</p>
+                      </section>
+                       <section>
+                        <h3 class="preview-section-title">Experience</h3>
+                        @for (exp of resume().experience; track $index) {
+                          <div class="preview-item">
+                            <div class="preview-item-header">
+                              <h4 class="font-bold">{{ exp.jobTitle || 'Job Title' }}</h4>
+                              <p>{{ exp.startDate }} - {{ exp.endDate }}</p>
+                            </div>
+                            <p class="italic">{{ exp.company || 'Company Name' }}, {{ exp.location }}</p>
+                            <ul class="preview-bullets">
+                              @for (line of exp.description.split('\n'); track $index) {
+                                @if (line) { <li>{{ line.replace('• ','') }}</li> }
+                              }
+                            </ul>
+                          </div>
+                        }
+                      </section>
+                      <section>
+                        <h3 class="preview-section-title">Education</h3>
+                        @for (edu of resume().education; track $index) {
+                          <div class="preview-item">
+                             <div class="preview-item-header">
+                               <h4 class="font-bold">{{ edu.school || 'School / University' }}</h4>
+                               <p>{{ edu.startDate }} - {{ edu.endDate }}</p>
+                             </div>
+                            <p class="italic">{{ edu.degree || 'Degree' }}, {{ edu.fieldOfStudy }}</p>
+                          </div>
+                        }
+                      </section>
+                    </main>
+                  </div>
+                }
+                <!-- This structure is for the Classic template -->
+                @if (resume().template === 'classic') {
+                  <header class="preview-header">
+                    <h2 class="preview-name">{{ resume().personal.fullName || 'Your Name' }}</h2>
+                    <div class="preview-contact">
+                      @if(resume().personal.email) { <span>{{ resume().personal.email }}</span> }
+                      @if(resume().personal.phone) { <span>{{ resume().personal.phone }}</span> }
+                      @if(resume().personal.location) { <span>{{ resume().personal.location }}</span> }
+                      @if(resume().personal.website) { <span>{{ resume().personal.website }}</span> }
+                    </div>
+                  </header>
+                   <main class="preview-main">
+                      <section>
+                        <h3 class="preview-section-title">Summary</h3>
+                        <p class="preview-body">{{ resume().summary }}</p>
+                      </section>
+                       <section>
+                        <h3 class="preview-section-title">Experience</h3>
+                        @for (exp of resume().experience; track $index) {
+                          <div class="preview-item">
+                            <div class="preview-item-header">
+                              <h4 class="font-bold">{{ exp.jobTitle || 'Job Title' }}</h4>
+                              <p>{{ exp.startDate }} - {{ exp.endDate }}</p>
+                            </div>
+                            <p class="italic">{{ exp.company || 'Company Name' }}, {{ exp.location }}</p>
+                            <ul class="preview-bullets">
+                              @for (line of exp.description.split('\n'); track $index) {
+                                @if (line) { <li>{{ line.replace('• ','') }}</li> }
+                              }
+                            </ul>
+                          </div>
+                        }
+                      </section>
+                      <section>
+                        <h3 class="preview-section-title">Education</h3>
+                        @for (edu of resume().education; track $index) {
+                          <div class="preview-item">
+                             <div class="preview-item-header">
+                               <h4 class="font-bold">{{ edu.school || 'School / University' }}</h4>
+                               <p>{{ edu.startDate }} - {{ edu.endDate }}</p>
+                             </div>
+                            <p class="italic">{{ edu.degree || 'Degree' }}, {{ edu.fieldOfStudy }}</p>
+                          </div>
+                        }
+                      </section>
+                      <section>
+                        <h3 class="preview-section-title">Skills</h3>
+                        <p class="preview-body">{{ resume().skills.join(', ') }}</p>
+                      </section>
+                    </main>
+                }
+            </div>
+        </div>
+
+      </div>
+    }
+    
+    <!-- Step 3: Finalize -->
+    @if (step() === 3) {
+      <div class="animate-fade-in text-center p-8">
+        <i class="fa-solid fa-circle-check text-6xl text-green-500 mb-4"></i>
+        <h2 class="text-3xl font-bold mb-4">Your Resume is Ready!</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-6 max-w-lg mx-auto">
+          Get an ATS-friendly score and feedback by analyzing your resume against a specific job description.
+        </p>
+        <button (click)="openAtsModal()" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition-colors">
+          <i class="fa-solid fa-robot mr-2"></i> Analyze with AI
+        </button>
+      </div>
+    }
+
+    <!-- Navigation Buttons -->
+    <div class="mt-8 pt-6 border-t dark:border-slate-700 flex justify-between items-center">
+      <button (click)="prevStep()" [class.invisible]="step() === 1" class="bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 font-bold py-2 px-4 rounded-lg">
+        Back
+      </button>
+      <button (click)="nextStep()" [class.invisible]="step() >= 3" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg">
+        Next
+      </button>
+       @if (step() === 3) {
+         <button class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg" (click)="setStep(1)">
+          Start Over
+        </button>
+       }
+    </div>
+  </div>
+</div>
+
+
+<!-- AI Suggestion Modal -->
+@if (aiModalState().isOpen) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 animate-fade-in-fast">
+    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-lg p-6">
+      <h3 class="text-xl font-bold mb-4">AI Suggestions for {{ aiModalState().fieldType | titlecase }}</h3>
+      <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">Paste a job description below to get tailored keywords and phrases.</p>
+      <textarea [(ngModel)]="aiModalState().jobDescription" placeholder="Paste job description here..." class="form-input w-full mb-4" rows="6"></textarea>
+      <div class="flex justify-end gap-3 mb-4">
+        <button (click)="closeAiModal()" class="bg-slate-200 dark:bg-slate-600 font-bold py-2 px-4 rounded-lg">Cancel</button>
+        <button (click)="getAiSuggestions()" [disabled]="aiModalState().isLoading || !aiModalState().jobDescription" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg disabled:bg-indigo-400">
+          @if (aiModalState().isLoading) { <span>Generating...</span> } @else { <span>Get Suggestions</span> }
+        </button>
+      </div>
+      @if (aiModalState().isLoading) {
+        <p class="text-center p-4">Thinking...</p>
+      }
+      @if (aiModalState().suggestions.length > 0) {
+        <div class="max-h-48 overflow-y-auto space-y-2">
+          @for (sugg of aiModalState().suggestions; track $index) {
+            <div (click)="useSuggestion(sugg)" class="p-3 bg-slate-100 dark:bg-slate-700 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 cursor-pointer text-sm">
+              {{ sugg }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- ATS Analysis Modal -->
+@if (atsModalState().isOpen) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 animate-fade-in-fast">
+    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-2xl p-6">
+       <h3 class="text-xl font-bold mb-4">ATS Analysis</h3>
+       @if (!atsModalState().result) {
+          <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">Paste the target job description to analyze your resume's compatibility.</p>
+          <textarea [(ngModel)]="atsModalState().jobDescription" placeholder="Paste job description here..." class="form-input w-full mb-4" rows="8"></textarea>
+          <div class="flex justify-end gap-3">
+            <button (click)="closeAtsModal()" class="bg-slate-200 dark:bg-slate-600 font-bold py-2 px-4 rounded-lg">Cancel</button>
+            <button (click)="runAtsAnalysis()" [disabled]="atsModalState().isLoading || !atsModalState().jobDescription" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg disabled:bg-indigo-400">
+              @if (atsModalState().isLoading) { <span>Analyzing...</span> } @else { <span>Run Analysis</span> }
+            </button>
+          </div>
+       } @else {
+          <div class="text-center">
+             <h4 class="text-lg font-semibold">Your Score:</h4>
+             <p class="text-6xl font-bold my-2" 
+                [class.text-green-500]="atsModalState().result!.score >= 80"
+                [class.text-yellow-500]="atsModalState().result!.score >= 60 && atsModalState().result!.score < 80"
+                [class.text-red-500]="atsModalState().result!.score < 60">
+                {{ atsModalState().result!.score }}/100
+             </p>
+          </div>
+          <div class="mt-6">
+            <h4 class="text-lg font-semibold mb-2">AI Feedback:</h4>
+            <p class="text-sm bg-slate-100 dark:bg-slate-700 p-4 rounded-md whitespace-pre-wrap">{{ atsModalState().result!.feedback }}</p>
+          </div>
+           <div class="flex justify-end mt-6">
+            <button (click)="closeAtsModal()" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg">Close</button>
+          </div>
+       }
+    </div>
+  </div>
+}

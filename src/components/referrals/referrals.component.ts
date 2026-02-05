@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// FIX: Import FormGroup to use as a type for the form property.
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormsModule } from '@angular/forms';
+// FIX: Import FormControl and remove FormBuilder as it's no longer used.
+import { ReactiveFormsModule, Validators, FormGroup, FormsModule, FormControl } from '@angular/forms';
 import { ReferralService } from '../../services/referral.service';
 import { JobOpening } from '../../models';
 
@@ -13,13 +13,17 @@ import { JobOpening } from '../../models';
 })
 export class ReferralsComponent {
   private referralService = inject(ReferralService);
-  // FIX: Inject FormBuilder as a class property. This resolves the type inference issue where `fb.group` was not recognized.
-  private fb = inject(FormBuilder);
   
   activeTab = 'find'; // 'find' or 'post'
   
-  // Form for posting a new opening
-  postOpeningForm: FormGroup;
+  // FIX: Replaced FormBuilder with direct instantiation of FormGroup and FormControl.
+  // This resolves the TypeScript error where the injected FormBuilder type was inferred as 'unknown'.
+  postOpeningForm: FormGroup = new FormGroup({
+    title: new FormControl('', Validators.required),
+    company: new FormControl('', Validators.required),
+    location: new FormControl('', Validators.required),
+    description: new FormControl('', [Validators.required, Validators.minLength(20)]),
+  });
   isPosting = false;
 
   // Signals for filtering and sorting
@@ -53,15 +57,6 @@ export class ReferralsComponent {
     return filtered;
   });
 
-  constructor() {
-    this.postOpeningForm = this.fb.group({
-      title: ['', Validators.required],
-      company: ['', Validators.required],
-      location: ['', Validators.required],
-      description: ['', [Validators.required, Validators.minLength(20)]],
-    });
-  }
-  
   setActiveTab(tab: string): void {
     this.activeTab = tab;
     if (tab === 'post') {

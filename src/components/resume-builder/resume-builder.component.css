@@ -1,0 +1,169 @@
+/* Base Form Input Styles */
+.form-input {
+  @apply w-full p-2 bg-slate-100 dark:bg-slate-700 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none transition border border-slate-200 dark:border-slate-600;
+}
+
+/* AI Button Styles */
+.ai-button {
+  @apply text-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900 font-bold py-1 px-3 rounded-lg transition-colors duration-300;
+}
+
+.animate-fade-in-fast {
+  animation: fadeIn 0.2s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* --- Base Resume Preview Styles --- */
+.resume-preview {
+  color: #1e293b;
+  font-size: 10px; /* Base size for resume, scales well */
+  line-height: 1.5;
+}
+.resume-preview .preview-name {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.resume-preview .preview-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.9em;
+  color: #475569;
+}
+.resume-preview .preview-section-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.resume-preview .preview-body {
+  font-size: 1em;
+  text-align: justify;
+}
+.resume-preview .preview-item {
+  margin-bottom: 1rem;
+}
+.resume-preview .preview-item-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1em;
+  margin-bottom: 0.1rem;
+}
+.resume-preview .preview-bullets {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  font-size: 1em;
+}
+
+/* --- Template: Classic --- */
+.template-classic {
+  font-family: Georgia, serif;
+}
+.template-classic .preview-header {
+  text-align: center;
+  border-bottom: 1px solid #94a3b8;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.template-classic .preview-name {
+  font-size: 2.8em;
+  color: #334155;
+}
+.template-classic .preview-contact {
+  justify-content: center;
+}
+.template-classic .preview-section-title {
+  border-bottom: 1px solid #94a3b8;
+  padding-bottom: 0.25rem;
+  color: #334155;
+}
+
+/* --- Template: Modern --- */
+.template-modern {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.template-modern .preview-container {
+  display: flex;
+  gap: 2rem;
+}
+.template-modern .preview-sidebar {
+  flex: 0 0 35%;
+  border-right: 1px solid #e2e8f0;
+  padding-right: 2rem;
+}
+.template-modern .preview-main {
+  flex: 1;
+}
+.template-modern .preview-name {
+  font-size: 2.5em;
+  color: #4f46e5;
+}
+.template-modern .preview-contact {
+  flex-direction: column;
+  gap: 0.25rem;
+  line-height: 1.4;
+  margin-top: 1rem;
+}
+.template-modern .preview-section-title {
+  color: #4f46e5;
+  border-bottom: none;
+}
+.template-modern .preview-sidebar .preview-section-title {
+  font-size: 1.2em;
+}
+.template-modern .preview-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* --- Template: Creative --- */
+.template-creative {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.template-creative .preview-container {
+  display: flex;
+}
+.template-creative .preview-sidebar {
+  flex: 0 0 30%;
+  background-color: #1e293b;
+  color: #f1f5f9;
+  padding: 1.5rem;
+  margin: -2rem 1.5rem -2rem -2rem; /* Bleed into padding */
+}
+.template-creative .preview-main {
+  flex: 1;
+  padding-left: 1.5rem;
+}
+.template-creative .preview-name {
+  font-size: 2.2em;
+  color: #f8fafc;
+  line-height: 1.2;
+}
+.template-creative .preview-contact {
+  flex-direction: column;
+  color: #cbd5e1;
+  gap: 0.4rem;
+}
+.template-creative .preview-section-title {
+  color: #1e293b;
+}
+.template-creative .preview-sidebar .preview-section-title {
+  color: #f8fafc;
+}
+.template-creative .preview-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.template-creative .preview-skills-list span {
+  background-color: #334155;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}

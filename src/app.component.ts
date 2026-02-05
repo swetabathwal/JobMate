@@ -5,13 +5,14 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChatbotComponent } from './components/chatbot/chatbot.component';
 import { PlaceholderComponent } from './components/placeholder/placeholder.component';
 import { ReferralsComponent } from './components/referrals/referrals.component';
+import { ResumeBuilderComponent } from './components/resume-builder/resume-builder.component';
 import { AppView } from './models';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, HeaderComponent, DashboardComponent, ChatbotComponent, PlaceholderComponent, ReferralsComponent],
+  imports: [CommonModule, HeaderComponent, DashboardComponent, ChatbotComponent, PlaceholderComponent, ReferralsComponent, ResumeBuilderComponent],
 })
 export class AppComponent {
   activeView = signal<AppView>('dashboard');

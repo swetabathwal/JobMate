@@ -20,7 +20,7 @@ const MOCK_OPENINGS: JobOpening[] = [
     postedBy: 'Bob Williams',
     avatar: 'https://i.pravatar.cc/150?u=bob'
   },
-  {
+    {
     id: 3,
     title: 'Full-Stack Developer (Python/React)',
     company: 'CodeGenius',
@@ -37,6 +37,24 @@ const MOCK_OPENINGS: JobOpening[] = [
     description: 'Design beautiful and intuitive user interfaces for our mobile and web products. A strong portfolio is required.',
     postedBy: 'Diana Prince',
     avatar: 'https://i.pravatar.cc/150?u=diana'
+  },
+  {
+    id: 5,
+    title: 'DevOps Engineer',
+    company: 'CloudWorks',
+    location: 'Seattle, WA',
+    description: 'Manage our cloud infrastructure on AWS and automate our deployment pipelines. Experience with Kubernetes and Terraform is essential.',
+    postedBy: 'Ethan Hunt',
+    avatar: 'https://i.pravatar.cc/150?u=ethan'
+  },
+  {
+    id: 6,
+    title: 'Data Scientist',
+    company: 'Numerix',
+    location: 'Boston, MA',
+    description: 'Analyze large datasets to extract meaningful insights and build predictive models. Proficiency in Python, R, and SQL is required.',
+    postedBy: 'Fiona Glenanne',
+    avatar: 'https://i.pravatar.cc/150?u=fiona'
   }
 ];
 
